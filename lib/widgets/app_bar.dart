@@ -127,16 +127,80 @@ class _CustomAppBarState extends State<CustomAppBar>
                     ),
                     // "Book a Call" button below navigation buttons on mobile
                     SizedBox(height: 10), // Add spacing
-                    MouseRegion(
-                      onEnter: (_) => setState(() => _isHovered = true),
-                      onExit: (_) => setState(() => _isHovered = false),
-                      child: AnimatedHexButton(
-                        label: 'Book a Call',
-                        onTap: () {
-                          print('Book a Call button pressed');
-                        },
-                        isHovered: _isHovered,
-                        scaleAnimation: _scaleAnimation,
+
+                    Padding(
+                      padding: EdgeInsets.only(right: 20),
+                      child: MouseRegion(
+                        onEnter: (_) => setState(() => _isHovered = true),
+                        onExit: (_) => setState(() => _isHovered = false),
+                        child: GestureDetector(
+                          onTap: () async {
+                            const whatsappUrl = "https://wa.me/963982338719";
+                            final uri = Uri.parse(whatsappUrl);
+                            if (await canLaunchUrl(uri)) {
+                              await launchUrl(uri,
+                                  mode: LaunchMode.externalApplication);
+                            } else {
+                              throw 'Could not launch $whatsappUrl';
+                            }
+                          },
+                          child: AnimatedBuilder(
+                            animation: _scaleAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                scale: _scaleAnimation.value,
+                                child: Container(
+                                  width: 150,
+                                  height: 50,
+                                  decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.5),
+                                        blurRadius: 10,
+                                        offset: Offset(5, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: CustomPaint(
+                                    painter: HexagonalButtonPainter(
+                                      gradient: _isHovered
+                                          ? null
+                                          : LinearGradient(
+                                              colors: [
+                                                Color.fromARGB(255, 6, 42, 103),
+                                                Color.fromARGB(255, 2, 15, 39),
+                                              ],
+                                              begin: Alignment.topLeft,
+                                              end: Alignment.bottomRight,
+                                            ),
+                                      borderColor: _isHovered
+                                          ? Colors.blue
+                                          : Colors.transparent,
+                                    ),
+                                    child: Center(
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(FontAwesomeIcons.whatsapp,
+                                              color: Colors.white, size: 18),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'Book a Call',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
                       ),
                     ),
                   ],
