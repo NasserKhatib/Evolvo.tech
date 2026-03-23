@@ -1,206 +1,104 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:movies_app/widgets/app_bar.dart';
-
-import 'package:url_launcher/url_launcher.dart';
+import 'package:movies_app/l10n/strings.dart';
 
 class PortfolioSection extends StatefulWidget {
+  final bool isArabic;
+  const PortfolioSection({this.isArabic = false});
+
   @override
   State<PortfolioSection> createState() => _PortfolioSectionState();
 }
 
 class _PortfolioSectionState extends State<PortfolioSection> {
-  final List<PortfolioItem> items = [
+  List<PortfolioItem> _buildItems(AppStrings s) => [
     PortfolioItem(
       android: true,
       iOS: true,
       title: 'IMN',
       imagePath: 'assets/images/imn1.png',
-      description:
-          'IMN is a social network app that promotes positivity by removing negative feedback. It enables users to connect, learn, and earn through an integrated college feature, turning education into a rewarding experience.',
-      details:
-          ' A place built on respect and community, where your feed uplifts you, your interactions are meaningful, and your time is educational. ',
-      h: 300,
-      w: 300,
-      p: -100,
+      category: s.imnCategory,
+      description: s.imnDescription,
+      details: s.imnDetails,
     ),
     PortfolioItem(
       android: true,
       iOS: true,
-      title: 'foodora',
+      title: 'Foodora',
       imagePath: 'assets/images/imn2.png',
-      description:
-          'Foodora is a food delivery platform that connects local businesses, skilled riders, and a dedicated team to deliver fast, affordable, and quality meals. It empowers communities by saving valuable time and enhancing everyday experiences, turning every delivery into a positive impact',
-      details:
-          'A platform  for food delivery that connects local businesses, skilled riders to deliver fast.',
-      h: 400,
-      w: 320,
-      p: -180,
+      category: s.foodoraCategory,
+      description: s.foodoraDescription,
+      details: s.foodoraDetails,
     ),
     PortfolioItem(
       android: false,
       iOS: false,
       title: 'Outer Paradise',
       imagePath: 'assets/images/imn3.png',
-      description:
-          'Through our partnership with Outer Paradise, we have achieved exceptional quality in both gameplay and graphics. Whether you have a 2D, 3D, XR, or virtual production project in mind, you can count on our collaboration to deliver a high-quality experience that exceeds your expectations.',
-      details:
-          'where your game ideas are brought to life with creativity and precision',
-      h: 420,
-      w: 320,
-      p: -150,
+      category: s.outerParadiseCategory,
+      description: s.outerParadiseDescription,
+      details: s.outerParadiseDetails,
     ),
   ];
-  bool _isHovered = false;
+
   @override
   Widget build(BuildContext context) {
+    final s = AppStrings(widget.isArabic);
+    final items = _buildItems(s);
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
 
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 100,
-          ),
-          Wrap(
-            spacing: isMobile ? 70 : 40,
-            runSpacing: isMobile ? 70 : 40,
-            children: items
-                .map((item) => _buildPortfolioItem(context, item))
-                .toList(),
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          Center(
-            child: MouseRegion(
-              onEnter: (_) => setState(() => _isHovered = true),
-              onExit: (_) => setState(() => _isHovered = false),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PortfolioDetailPage(items: items),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 175,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        blurRadius: 10,
-                        offset: const Offset(5, 5),
-                      ),
-                    ],
-                  ),
-                  child: CustomPaint(
-                    painter: HexagonalButtonPainter(
-                      gradient: _isHovered
-                          ? null
-                          : const LinearGradient(
-                              colors: [
-                                Colors.blue,
-                                Color.fromARGB(255, 10, 60, 153),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                      borderColor:
-                          _isHovered ? Colors.blue : Colors.transparent,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Portfolio Details',
-                        style: TextStyle(
-                          fontSize: isMobile ? 18 : 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: isMobile ? 16 : 60,
+        vertical: 20,
       ),
-    );
-  }
-
-  Widget _buildPortfolioItem(BuildContext context, PortfolioItem item) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PortfolioDetailPage(items: items),
-          ),
-        );
-      },
-      child: Stack(
-        clipBehavior: Clip.none, // Allows the image to overlap the container
-        alignment: Alignment.topCenter,
+      child: Column(
         children: [
-          // The card below the image
-          Container(
-            margin:
-                EdgeInsets.only(top: 100), // Space for the image above the card
-            width: isMobile ? screenWidth * 0.7 : 300,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.blue, // Blue border color
-                width: 2, // Border thickness
-              ),
-            ),
-            padding: EdgeInsets.fromLTRB(16, 90, 16, 16), // Space for content
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    item.title,
-                    style: TextStyle(
-                      fontSize: isMobile ? 18 : 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  item.details,
-                  style: TextStyle(
-                    fontSize: isMobile ? 14 : 16,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-                SizedBox(height: 10),
-              ],
-            ),
-          ),
-          // The image at the top center
-          Positioned(
-            top: item.p, // Ensures the image is properly positioned at the top
-            child: Container(
-              width: item.w, // Adjust size as needed
-              height: item.h, // Adjust size as needed
+          // Responsive portfolio grid
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final w = constraints.maxWidth;
+              final int cols = w < 650 ? 1 : (w < 1100 ? 2 : 3);
+              const double spacing = 24;
+              final double cardW = (w - spacing * (cols - 1)) / cols;
 
-              child: Image.asset(
-                item.imagePath,
-                fit: BoxFit
-                    .cover, // Ensure the image is proportional and fills the circle
+              return Wrap(
+                spacing: spacing,
+                runSpacing: spacing,
+                children: items
+                    .map((item) => _PortfolioCard(
+                          item: item,
+                          width: cardW,
+                          viewDetailsLabel: s.viewDetails,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PortfolioDetailPage(
+                                items: items,
+                                isArabic: widget.isArabic,
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              );
+            },
+          ),
+
+          const SizedBox(height: 48),
+
+          // View All button
+          _ViewAllButton(
+            label: s.viewAllProjects,
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => PortfolioDetailPage(
+                  items: items,
+                  isArabic: widget.isArabic,
+                ),
               ),
             ),
           ),
@@ -210,10 +108,285 @@ class _PortfolioSectionState extends State<PortfolioSection> {
   }
 }
 
+// ── Portfolio Card ─────────────────────────────────────────────────────────────
+
+class _PortfolioCard extends StatefulWidget {
+  final PortfolioItem item;
+  final double width;
+  final VoidCallback onTap;
+  final String viewDetailsLabel;
+
+  const _PortfolioCard({
+    required this.item,
+    required this.width,
+    required this.onTap,
+    this.viewDetailsLabel = 'View Details',
+  });
+
+  @override
+  State<_PortfolioCard> createState() => _PortfolioCardState();
+}
+
+class _PortfolioCardState extends State<_PortfolioCard> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOut,
+          width: widget.width,
+          transform: _hovered
+              ? (Matrix4.identity()..translate(0.0, -8.0))
+              : Matrix4.identity(),
+          decoration: BoxDecoration(
+            color: const Color(0xFF060E1B),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: _hovered
+                  ? Colors.blue
+                  : Colors.blue.withOpacity(0.18),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: _hovered
+                    ? Colors.blue.withOpacity(0.25)
+                    : Colors.blue.withOpacity(0.04),
+                blurRadius: _hovered ? 24 : 8,
+                spreadRadius: _hovered ? 2 : 0,
+                offset: const Offset(0, 8),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Image with overlay on hover
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(15),
+                  topRight: Radius.circular(15),
+                ),
+                child: Stack(
+                  children: [
+                    Image.asset(
+                      widget.item.imagePath,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                    ),
+                    // Hover overlay
+                    Positioned.fill(
+                      child: AnimatedOpacity(
+                      duration: const Duration(milliseconds: 200),
+                      opacity: _hovered ? 1.0 : 0.0,
+                      child: Container(
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.blue.withOpacity(0.5),
+                              Colors.black.withOpacity(0.6),
+                            ],
+                          ),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.open_in_new_rounded,
+                            color: Colors.white,
+                            size: 44,
+                          ),
+                        ),
+                      ),
+                    ),
+                    ), // Positioned.fill
+                    // Category badge
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.blue.withOpacity(0.85),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          widget.item.category,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Card body
+              Padding(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            widget.item.title,
+                            style: TextStyle(
+                              color: _hovered
+                                  ? const Color(0xFF90CAF9)
+                                  : Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                        ),
+                        // Platform icons
+                        if (widget.item.android)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 6),
+                            child: Icon(Icons.android,
+                                color: Color(0xFF3DDC84), size: 20),
+                          ),
+                        if (widget.item.iOS)
+                          const Padding(
+                            padding: EdgeInsets.only(left: 4),
+                            child: Icon(Icons.apple,
+                                color: Colors.white70, size: 20),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      widget.item.details,
+                      style: TextStyle(
+                        fontSize: 13.5,
+                        color: Colors.white.withOpacity(0.5),
+                        height: 1.6,
+                      ),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Text(
+                          widget.viewDetailsLabel,
+                          style: TextStyle(
+                            color: _hovered
+                                ? Colors.blue
+                                : Colors.blue.withOpacity(0.6),
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.3,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.arrow_forward_rounded,
+                          size: 14,
+                          color: _hovered
+                              ? Colors.blue
+                              : Colors.blue.withOpacity(0.6),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── View All Button ────────────────────────────────────────────────────────────
+
+class _ViewAllButton extends StatefulWidget {
+  final VoidCallback onTap;
+  final String label;
+  const _ViewAllButton({required this.onTap, this.label = 'View All Projects'});
+
+  @override
+  State<_ViewAllButton> createState() => _ViewAllButtonState();
+}
+
+class _ViewAllButtonState extends State<_ViewAllButton> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: Container(
+          width: 190,
+          height: 50,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(_hovered ? 0.35 : 0.15),
+                blurRadius: _hovered ? 20 : 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: CustomPaint(
+            painter: HexagonalButtonPainter(
+              gradient: _hovered
+                  ? null
+                  : const LinearGradient(
+                      colors: [Colors.blue, Color(0xFF0A3CD1)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+              borderColor: _hovered ? Colors.blue : Colors.transparent,
+            ),
+            child: Center(
+              child: Text(
+                widget.label,
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Portfolio Detail Page ──────────────────────────────────────────────────────
+
 class PortfolioDetailPage extends StatefulWidget {
   final List<PortfolioItem> items;
+  final bool isArabic;
 
-  const PortfolioDetailPage({Key? key, required this.items}) : super(key: key);
+  const PortfolioDetailPage({Key? key, required this.items, this.isArabic = false}) : super(key: key);
 
   @override
   _PortfolioDetailPageState createState() => _PortfolioDetailPageState();
@@ -222,40 +395,21 @@ class PortfolioDetailPage extends StatefulWidget {
 class _PortfolioDetailPageState extends State<PortfolioDetailPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<Offset> _imageSlideAnimation;
-  late Animation<Offset> _textSlideAnimation;
   late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
 
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 700),
     );
-
-    _imageSlideAnimation = Tween<Offset>(
-      begin: const Offset(-1.0, 0.0),
+    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.08),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-
-    _textSlideAnimation = Tween<Offset>(
-      begin: const Offset(1.0, 0.0),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _controller.forward();
   }
 
@@ -265,743 +419,341 @@ class _PortfolioDetailPageState extends State<PortfolioDetailPage>
     super.dispose();
   }
 
-  Future<void> _launchUrl(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not launch $url')),
-      );
-    }
-  }
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isMobile = screenWidth < 700;
 
-  BoxDecoration _buttonDecorationWithBorder() {
-    return BoxDecoration(
-      color: Colors.transparent,
-      border: Border.all(color: Colors.white, width: 2),
-      borderRadius: BorderRadius.circular(30),
-    );
-  }
-
-  /*Widget _buildPlatformButton({
-    required IconData icon,
-    required String label,
-    required VoidCallback onPressed,
-  }) {
-    bool _pressed = false;
-
-    return StatefulBuilder(
-      builder: (context, setLocalState) {
-        return GestureDetector(
-          onTap: onPressed,
-          onTapDown: (_) => setLocalState(() => _pressed = true),
-          onTapUp: (_) => setLocalState(() => _pressed = false),
-          onTapCancel: () => setLocalState(() => _pressed = false),
-          child: TweenAnimationBuilder<double>(
-            tween: Tween(begin: 1.0, end: _pressed ? 0.95 : 1.0),
-            duration: const Duration(milliseconds: 100),
-            curve: Curves.easeOut,
-            builder: (context, scale, child) {
-              return Transform.scale(
-                scale: scale,
-                child: child,
+    final s = AppStrings(widget.isArabic);
+    return Directionality(
+      textDirection: widget.isArabic ? TextDirection.rtl : TextDirection.ltr,
+      child: Scaffold(
+      backgroundColor: const Color(0xFF020B18),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF060E1B),
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(
+            widget.isArabic
+                ? Icons.arrow_forward_ios_rounded
+                : Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+            size: 20,
+          ),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          s.ourProjects,
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(1),
+          child: Container(
+            color: Colors.blue.withOpacity(0.15),
+            height: 1,
+          ),
+        ),
+      ),
+      body: FadeTransition(
+        opacity: _fadeAnimation,
+        child: SlideTransition(
+          position: _slideAnimation,
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(
+              horizontal: isMobile ? 20 : 60,
+              vertical: 40,
+            ),
+            itemCount: widget.items.length,
+            itemBuilder: (context, index) {
+              final item = widget.items[index];
+              return _ProjectDetailCard(
+                item: item,
+                index: index,
+                isMobile: isMobile,
+                isReversed: index % 2 == 1 && !isMobile,
+                availableOnLabel: s.availableOn,
               );
             },
-            child: Container(
-              decoration: _buttonDecorationWithBorder(),
-              child: ElevatedButton.icon(
-                onPressed: onPressed,
-                icon: Icon(
-                  icon,
-                  color: Colors.white,
-                  size: 35,
-                ),
-                label: Text(label, style: const TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  shape: const StadiumBorder(),
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }*/
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text('Projects', style: TextStyle(color: Colors.white)),
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.black,
-                Colors.blue.shade900,
-                Colors.blue.shade700,
-              ],
-            ),
           ),
         ),
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.black,
-              Colors.blue.shade900,
-              Colors.blue.shade700,
-            ],
-          ),
-        ),
-        child: ListView.separated(
-          padding: const EdgeInsets.all(16.0),
-          separatorBuilder: (_, __) => Divider(
-            color: Colors.black.withOpacity(0.4),
-            thickness: 1.5,
-            height: 40,
-          ),
-          itemCount: widget.items.length,
-          itemBuilder: (context, index) {
-            final item = widget.items[index];
+    ),  // Scaffold
+    ); // Directionality
+  }
+}
 
-            return Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              child: isMobile
-                  ? Column(
-                      children: [
-                        // Image (Mobile)
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: SlideTransition(
-                            position: _imageSlideAnimation,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: AspectRatio(
-                                aspectRatio: item.w /
-                                    item.h, // use your item's width & height
-                                child: Image.asset(
-                                  item.imagePath,
-                                  width: double.infinity,
-                                  fit: BoxFit
-                                      .cover, // still covers, but no cropping
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // Title (Mobile)
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: SlideTransition(
-                            position: _textSlideAnimation,
-                            child: Text(
-                              item.title,
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        // Details (Mobile)
-                        FadeTransition(
-                          opacity: _fadeAnimation,
-                          child: SlideTransition(
-                            position: _textSlideAnimation,
-                            child: Text(
-                              item.details,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                                height: 1.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // Mobile Buttons
-                        /*   Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (item.android)
-                              _buildPlatformButton(
-                                icon: Icons.android,
-                                label: 'Android',
-                                onPressed: () =>
-                                    _launchUrl('https://play.google.com/store'),
-                              ),
-                            if (item.android && item.iOS)
-                              const SizedBox(width: 12),
-                            if (item.iOS)
-                              _buildPlatformButton(
-                                icon: Icons.apple,
-                                label: 'iOS',
-                                onPressed: () => _launchUrl(
-                                    'https://www.apple.com/app-store/'),
-                              ),
-                          ],
-                        ),*/
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        // Image (Desktop)
-                        Expanded(
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: SlideTransition(
-                              position: _imageSlideAnimation,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: Image.asset(
-                                  item.imagePath,
-                                  width: 500,
-                                  height: 400,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 30),
-                        // Description & Buttons (Desktop)
-                        Expanded(
-                          flex: 2,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: SlideTransition(
-                              position: _textSlideAnimation,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.title,
-                                    style: const TextStyle(
-                                      decoration: TextDecoration.underline,
-                                      decorationColor: Colors.blue,
-                                      decorationThickness: 1.5,
-                                      fontSize: 26,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Text(
-                                    item.description,
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      color: Colors.white,
-                                      height: 1.5,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  /*   Row(
-                                    children: [
-                                      if (item.android)
-                                        _buildPlatformButton(
-                                          icon: Icons.android,
-                                          label: 'Android',
-                                          onPressed: () => _launchUrl(
-                                              'https://play.google.com/store'),
-                                        ),
-                                      if (item.android && item.iOS)
-                                        const SizedBox(width: 12),
-                                      if (item.iOS)
-                                        _buildPlatformButton(
-                                          icon: Icons.apple,
-                                          label: 'iOS',
-                                          onPressed: () => _launchUrl(
-                                              'https://www.apple.com/app-store/'),
-                                        ),
-                                    ],
-                                  ),*/
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
+// ── Project Detail Card ────────────────────────────────────────────────────────
+
+class _ProjectDetailCard extends StatelessWidget {
+  final PortfolioItem item;
+  final int index;
+  final bool isMobile;
+  final bool isReversed;
+  final String availableOnLabel;
+
+  const _ProjectDetailCard({
+    required this.item,
+    required this.index,
+    required this.isMobile,
+    required this.isReversed,
+    this.availableOnLabel = 'AVAILABLE ON',
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 60),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Project number + divider
+          Row(
+            children: [
+              Text(
+                '0${index + 1}',
+                style: const TextStyle(
+                  fontFamily: 'OriginTech',
+                  color: Colors.blue,
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Container(
+                  height: 1,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.blue.withOpacity(0.5),
+                        Colors.transparent,
                       ],
                     ),
-            );
-          },
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Content: image + text
+          isMobile
+              ? _buildMobileLayout(context)
+              : _buildDesktopLayout(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDesktopLayout(BuildContext context) {
+    final imageWidget = _buildImage(context);
+    final textWidget = _buildText(context);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: isReversed
+          ? [
+              Expanded(flex: 5, child: textWidget),
+              const SizedBox(width: 48),
+              Expanded(flex: 5, child: imageWidget),
+            ]
+          : [
+              Expanded(flex: 5, child: imageWidget),
+              const SizedBox(width: 48),
+              Expanded(flex: 5, child: textWidget),
+            ],
+    );
+  }
+
+  Widget _buildMobileLayout(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildImage(context),
+        const SizedBox(height: 24),
+        _buildText(context),
+      ],
+    );
+  }
+
+  Widget _buildImage(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.withOpacity(0.15),
+              blurRadius: 30,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Image.asset(
+          item.imagePath,
+          fit: BoxFit.cover,
+          width: double.infinity,
         ),
       ),
     );
   }
+
+  Widget _buildText(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Category chip
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.blue.withOpacity(0.3)),
+          ),
+          child: Text(
+            item.category,
+            style: const TextStyle(
+              color: Colors.blue,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 0.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 14),
+
+        // Title
+        Text(
+          item.title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
+        ),
+        const SizedBox(height: 6),
+
+        // Blue underline
+        Container(
+          width: 40,
+          height: 3,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // Description
+        Text(
+          item.description,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.white.withOpacity(0.7),
+            height: 1.8,
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Platform badges
+        if (item.android || item.iOS) ...[
+          Text(
+            availableOnLabel,
+            style: TextStyle(
+              color: Colors.white38,
+              fontSize: 11,
+              letterSpacing: 1.5,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              if (item.android)
+                _PlatformBadge(
+                  icon: Icons.android,
+                  label: 'Android',
+                  color: const Color(0xFF3DDC84),
+                ),
+              if (item.android && item.iOS) const SizedBox(width: 10),
+              if (item.iOS)
+                _PlatformBadge(
+                  icon: Icons.apple,
+                  label: 'iOS',
+                  color: Colors.white70,
+                ),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
 }
+
+// ── Platform Badge ─────────────────────────────────────────────────────────────
+
+class _PlatformBadge extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _PlatformBadge({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Portfolio Item Data ────────────────────────────────────────────────────────
 
 class PortfolioItem {
   final String title;
   final String imagePath;
   final String description;
   final String details;
+  final String category;
   final bool android;
   final bool iOS;
-  final double h;
-  final double w;
-  final double p;
 
   PortfolioItem({
-    required this.android,
-    required this.iOS,
-    required this.p,
     required this.title,
     required this.imagePath,
     required this.description,
     required this.details,
-    required this.h,
-    required this.w,
+    this.category = 'App',
+    this.android = false,
+    this.iOS = false,
   });
 }
-
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-/*import 'package:flutter/material.dart';
-import 'package:movies_app/lib/widgets/app_bar.dart';
-
-class PortfolioSection extends StatefulWidget {
-  @override
-  State<PortfolioSection> createState() => _PortfolioSectionState();
-}
-
-class _PortfolioSectionState extends State<PortfolioSection> {
-  final List<PortfolioItem> items = [
-    PortfolioItem(
-      title: 'IMN',
-      imagePath: 'assets/images/imn1.png',
-      description:
-          'IMN is a social network app that promotes positivity by removing negative feedback. It enables users to connect, learn, and earn through an integrated college feature, turning education into a rewarding experience.',
-      details:
-          ' A place built on respect and community, where your feed uplifts you, your interactions are meaningful, and your time is educational. ',
-      h: 300,
-      w: 300,
-      p: -100,
-    ),
-    PortfolioItem(
-      title: 'foodora',
-      imagePath: 'assets/images/imn2.png',
-      description:
-          'Foodora is a food delivery platform that connects local businesses, skilled riders, and a dedicated team to deliver fast, affordable, and quality meals. It empowers communities by saving valuable time and enhancing everyday experiences, turning every delivery into a positive impact',
-      details:
-          'A platform  for food delivery that connects local businesses, skilled riders to deliver fast.',
-      h: 400,
-      w: 320,
-      p: -180,
-    ),
-    PortfolioItem(
-      title: 'Outer Paradise',
-      imagePath: 'assets/images/imn3.png',
-      description:
-          'Through our partnership with Outer Paradise, we have achieved exceptional quality in both gameplay and graphics. Whether you have a 2D, 3D, XR, or virtual production project in mind, you can count on our collaboration to deliver a high-quality experience that exceeds your expectations.',
-      details:
-          'where your game ideas are brought to life with creativity and precision',
-      h: 420,
-      w: 320,
-      p: -150,
-    ),
-  ];
-  bool _isHovered = false;
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 100,
-          ),
-          Wrap(
-            spacing: isMobile ? 70 : 40,
-            runSpacing: isMobile ? 70 : 40,
-            children: items
-                .map((item) => _buildPortfolioItem(context, item))
-                .toList(),
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          Center(
-            child: MouseRegion(
-              onEnter: (_) => setState(() => _isHovered = true),
-              onExit: (_) => setState(() => _isHovered = false),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PortfolioDetailPage(items: items),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 175,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.5),
-                        blurRadius: 10,
-                        offset: const Offset(5, 5),
-                      ),
-                    ],
-                  ),
-                  child: CustomPaint(
-                    painter: HexagonalButtonPainter(
-                      gradient: _isHovered
-                          ? null
-                          : const LinearGradient(
-                              colors: [
-                                Colors.blue,
-                                Color.fromARGB(255, 10, 60, 153),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                      borderColor:
-                          _isHovered ? Colors.blue : Colors.transparent,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Portfolio Details',
-                        style: TextStyle(
-                          fontSize: isMobile ? 18 : 20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPortfolioItem(BuildContext context, PortfolioItem item) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PortfolioDetailPage(items: items),
-          ),
-        );
-      },
-      child: Stack(
-        clipBehavior: Clip.none, // Allows the image to overlap the container
-        alignment: Alignment.topCenter,
-        children: [
-          // The card below the image
-          Container(
-            margin:
-                EdgeInsets.only(top: 100), // Space for the image above the card
-            width: isMobile ? screenWidth * 0.7 : 300,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.blue, // Blue border color
-                width: 2, // Border thickness
-              ),
-            ),
-            padding: EdgeInsets.fromLTRB(16, 90, 16, 16), // Space for content
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Text(
-                    item.title,
-                    style: TextStyle(
-                      fontSize: isMobile ? 18 : 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  item.details,
-                  style: TextStyle(
-                    fontSize: isMobile ? 14 : 16,
-                    color: Colors.white.withOpacity(0.8),
-                  ),
-                ),
-                SizedBox(height: 10),
-              ],
-            ),
-          ),
-          // The image at the top center
-          Positioned(
-            top: item.p, // Ensures the image is properly positioned at the top
-            child: Container(
-              width: item.w, // Adjust size as needed
-              height: item.h, // Adjust size as needed
-
-              child: Image.asset(
-                item.imagePath,
-                fit: BoxFit
-                    .cover, // Ensure the image is proportional and fills the circle
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class PortfolioDetailPage extends StatefulWidget {
-  final List<PortfolioItem> items;
-
-  const PortfolioDetailPage({Key? key, required this.items}) : super(key: key);
-
-  @override
-  _PortfolioDetailPageState createState() => _PortfolioDetailPageState();
-}
-
-class _PortfolioDetailPageState extends State<PortfolioDetailPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Offset> _imageSlideAnimation;
-  late Animation<Offset> _textSlideAnimation;
-  late Animation<double> _fadeAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 800),
-    );
-
-    _imageSlideAnimation = Tween<Offset>(
-      begin: Offset(-1.0, 0.0), // Start off-screen to the left
-      end: Offset.zero, // Natural position
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-
-    _textSlideAnimation = Tween<Offset>(
-      begin: Offset(1.0, 0.0), // Start off-screen to the right
-      end: Offset.zero, // Natural position
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
-    );
-
-    _fadeAnimation = Tween<double>(
-      begin: 0.0, // Fully transparent
-      end: 1.0, // Fully visible
-    ).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
-
-    _controller.forward(); // Start animations
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
-
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Projects',
-          style: TextStyle(color: Colors.white),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.black,
-                Colors.blue.shade900,
-                Colors.blue.shade700,
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.black,
-              Colors.blue.shade900,
-              Colors.blue.shade700,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: ListView.separated(
-          padding: const EdgeInsets.all(16.0),
-          itemCount: widget.items.length,
-          separatorBuilder: (context, index) => Divider(
-            color: Colors.white.withOpacity(1), // Line between projects
-            thickness: 1.5,
-            height: 40,
-          ),
-          itemBuilder: (context, index) {
-            final item = widget.items[index];
-
-            return Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                color: Colors.white
-                    .withOpacity(0.05), // Light background for each project
-              ),
-              child: isMobile
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Image (Mobile Layout)
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: Image.asset(
-                            item.imagePath,
-                            width: double.infinity,
-                            height: 250,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        // Title
-                        Text(
-                          item.title,
-                          style: const TextStyle(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Color.fromARGB(255, 5, 44, 172),
-                            decorationThickness: 2,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        // Description
-                        Text(
-                          item.details,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.white70,
-                            height: 1.5,
-                          ),
-                        ),
-                      ],
-                    )
-                  : Row(
-                      children: [
-                        // Image (Desktop Layout)
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Image.asset(
-                              item.imagePath,
-                              width: 500,
-                              height: 400,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 30),
-                        // Description (Desktop Layout)
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.title,
-                                style: const TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Colors.blue,
-                                  decorationThickness: 3,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                item.description,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.white,
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class PortfolioItem {
-  final String title;
-  final String imagePath;
-  final String description;
-  final String details;
-
-  final double h;
-  final double w;
-  final double p;
-
-  PortfolioItem({
-    required this.p,
-    required this.title,
-    required this.imagePath,
-    required this.description,
-    required this.details,
-    required this.h,
-    required this.w,
-  });
-}
-*/
